@@ -1,5 +1,4 @@
-<div id="create_project_form" class="absolute inset-0 bg-black/40 place-items-center
-    {{ $errors->any() ? '' : 'hidden' }}">
+<div id="create_project_form" class="absolute inset-0 bg-black/40 z-20 place-items-center {{ $errors->createProject->any() ? '' : 'hidden' }}">
 <form action="{{ route('projects.store') }}" method="POST" class="bg-white max-w-2xl w-full mx-auto p-6 rounded-lg shadow-md">
     <button
       type="button"
@@ -19,7 +18,7 @@
           placeholder="Enter project name"
           value="{{ old('name') }}"
         />
-        @error('name')
+        @error('name', 'createProject')
             <div class="mt-1 text-red-600 text-sm font-medium">{{ $message }}</div>
         @enderror
     </div>

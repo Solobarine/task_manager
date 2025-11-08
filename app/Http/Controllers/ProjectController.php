@@ -10,9 +10,26 @@ class ProjectController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        // Fetch Projects
+        $projects = Project::all();
+
+        // Fetch a single project
+        $project_query = $request->query('project');
+        $project = null;
+
+        if ($project_query) {
+            $project = Project::where('name', $project_query)->first();
+        }
+
+        // Fetch tasks
+        $tasks = [];
+        if ($project) {
+            $tasks = $project->tasks()->orderBy('priority')->get();
+        }
+
+        return view('welcome', ['projects' => $projects, 'project' => $project, 'tasks' => $tasks]);
     }
 
     /**
@@ -30,13 +47,13 @@ class ProjectController extends Controller
     {
         $request->validate(
             [
-                "name" => "required|unique:projects|max:255"
-            ]
+                'name' => 'required|unique:projects|max:255',
+            ], [], [], 'createProject'
         );
 
         Project::create($request->all());
 
-        return redirect()->route("home")->with("success", "Project Created Successfully");
+        return redirect()->route('home')->with('success', 'Project Created Successfully');
     }
 
     /**
